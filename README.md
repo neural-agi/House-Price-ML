@@ -192,7 +192,7 @@ This project is licensed under the [MIT License](LICENSE).
 BTech CSE (AI/ML) | Aspiring Machine Learning Engineer
 
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=flat-square&logo=github)](https://github.com/neural-agi)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](www.linkedin.com/in/paranjay-das-10b167384)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/paranjay-das-10b167384/)
 
 ---
 
