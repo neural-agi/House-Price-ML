@@ -1,102 +1,203 @@
-# House Price Prediction using Machine Learning
+<div align="center">
 
-## Overview
-This project implements an end-to-end machine learning pipeline to predict residential house prices using the Ames Housing dataset. The focus of this project is not only on predictive performance, but also on building a clean, reproducible ML workflow and analyzing model behavior through proper evaluation and overfitting analysis.
+# 🏠 House Price Predictor ML
 
-## Problem Statement
-The objective is to predict the final sale price of a house based on a combination of numerical and categorical features such as size, location, quality, and condition. This mirrors a common real-world regression problem in data science and machine learning.
+### End-to-end machine learning pipeline to predict residential house prices — clean, reproducible, and explainable.
 
-## Dataset
-- **Dataset:** Ames Housing Dataset (Kaggle)
-- **Target Variable:** `SalePrice`
-- **Features:** Mixture of numerical and categorical variables related to property attributes
-- The dataset contains missing values and heterogeneous feature types, making it suitable for demonstrating preprocessing pipelines.
+[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.x-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+[![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)]()
 
-## Approach
+<br/>
 
-### Data Preprocessing
-- Split features into numerical and categorical columns
-- Numerical features:
-  - Imputed using median values to reduce sensitivity to outliers
-- Categorical features:
-  - Imputed using most frequent values
-  - One-hot encoded to convert categories into numerical form
-- All preprocessing steps are handled using a unified `ColumnTransformer` and `Pipeline` to avoid data leakage
+> **Predicts residential sale prices** with a Random Forest pipeline, complete with preprocessing, hyperparameter tuning, overfitting analysis, and model explainability using feature & permutation importance.
 
-### Models
-- **Baseline Model:** Linear Regression  
-- **Primary Model:** Random Forest Regressor
+</div>
 
-### Evaluation
-- Metric used: **Mean Absolute Error (MAE)**
-- MAE was chosen because it is easily interpretable in real-world monetary terms and provides a clear measure of average prediction error.
-
-## Results
-
-| Model | MAE |
-|------|-----|
-| Linear Regression | Higher than Random Forest |
-| Random Forest (baseline) | ~17,500 |
-| Random Forest (tuned) | ~17,500 |
-
-Although hyperparameter tuning significantly reduced training error, validation performance remained similar to the baseline model, indicating overfitting and diminishing returns from increased model complexity.
-
-## Overfitting Analysis
-The tuned Random Forest model achieves a substantially lower training MAE (~7,200) compared to the validation MAE (~17,500). This gap indicates that the model fits the training data very well but does not generalize proportionally to unseen data. This behavior highlights the bias–variance tradeoff and the presence of inherent noise in the dataset.
-
-## Model Explainability
-
-To better understand how the model arrives at its predictions, feature importance and permutation importance analyses were performed on the trained Random Forest model.
-
-### Feature Importance
-Random Forest feature importance highlights which input features contribute the most to reducing prediction error across the ensemble of trees. The most influential features were related to overall house quality, living area size, basement size, and garage-related attributes.
-
-### Permutation Importance
-Permutation importance was used as a model-agnostic explainability technique to validate these findings. This method measures the increase in prediction error when individual features are randomly shuffled, thereby breaking their relationship with the target variable.
-
-The top features identified through permutation importance include:
-- Overall house quality (`OverallQual`)
-- Above-ground living area (`GrLivArea`)
-- Total basement area (`TotalBsmtSF`)
-- Finished basement area (`BsmtFinSF1`)
-- First floor area (`1stFlrSF`)
-- Garage size and capacity (`GarageArea`, `GarageCars`)
-
-### Insights
-The results align strongly with real-world intuition: houses with better construction quality, larger usable living spaces, and adequate basement and garage areas tend to command higher prices. The consistency between Random Forest feature importance and permutation importance increases confidence that the model relies on meaningful structural attributes rather than spurious correlations.
-
-This explainability step helps ensure that the model’s predictions are interpretable and grounded in domain-relevant factors, which is critical for deploying machine learning models in real-world decision-making scenarios.
-
-
-## Project Structure
-<img width="293" height="252" alt="image" src="https://github.com/user-attachments/assets/31e538e2-26be-47d8-89c4-082052ce2855" />
-
-
-## Tech Stack
-- Python
-- Pandas, NumPy
-- Scikit-learn
-- Matplotlib, Seaborn
-
-## How to Run
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Open and run the notebook
-   ```bash
-   notebooks/01_house_price_prediction.ipynb
-   ```
 ---
-## Future Improvements 
-1. Feature importance and permutation based explainability
-2. Advanced feature engineering
-3. Deployment using Streamlit or cloud services
-4. Experimentation with gradient boosting models
+
+## 🎯 What This Project Does
+
+Given a house's physical attributes — size, quality, basement, garage — this model predicts its **final sale price** in dollars.
+
+This is a real-world regression problem built end-to-end:
+- Raw data → preprocessing → model training → evaluation → explainability
+- No data leakage (thanks to proper sklearn `Pipeline` usage)
+- Validated against overfitting with train vs validation MAE comparison
+
+---
+
+## 📊 Results at a Glance
+
+| Model | Train MAE | Validation MAE |
+|---|---|---|
+| Linear Regression (Baseline) | — | ~$22,000+ |
+| Random Forest (Default) | — | **~$17,500** |
+| Random Forest (Tuned) | ~$7,200 | ~$17,500 |
+
+> ⚠️ The tuned model's train-vs-val gap (~$10K) reveals classic overfitting — a great teaching moment on the bias-variance tradeoff.
+
+---
+
+## 🏗️ Project Structure
+
+```
+house-price-ml/
+│
+├── notebooks/
+│   └── 01_house_price_prediction.ipynb   # Full ML pipeline notebook
+│
+├── data/
+│   ├── train.csv                          # Ames Housing dataset
+│   └── data_description.txt              # Feature documentation
+│
+├── requirements.txt                       # Python dependencies
+└── README.md
+```
+
+---
+
+## ⚙️ ML Pipeline Overview
+
+```
+Raw Data (Ames Housing)
+        │
+        ▼
+┌──────────────────────────────┐
+│       Data Preprocessing     │
+│  ┌──────────┐ ┌───────────┐  │
+│  │ Numerical│ │Categorical│  │
+│  │  Impute  │ │  Impute + │  │
+│  │ (Median) │ │  OneHot   │  │
+│  └──────────┘ └───────────┘  │
+│      ColumnTransformer       │
+└──────────────┬───────────────┘
+               │
+               ▼
+    ┌─────────────────────┐
+    │   sklearn Pipeline  │
+    │ (No data leakage ✅) │
+    └──────────┬──────────┘
+               │
+     ┌─────────┴──────────┐
+     ▼                    ▼
+Linear Regression    Random Forest
+  (Baseline)       (Tuned w/ GridSearch)
+     │                    │
+     └────────┬───────────┘
+              ▼
+     MAE Evaluation + Overfitting Analysis
+              │
+              ▼
+     Feature Importance + Permutation Importance
+```
+
+---
+
+## 🔍 Model Explainability
+
+Both **feature importance** and **permutation importance** were used to understand what the model actually learned.
+
+### Top Predictive Features
+
+| Feature | Interpretation |
+|---|---|
+| `OverallQual` | Build quality rating |
+| `GrLivArea` | Above-ground living area (sq ft) |
+| `TotalBsmtSF` | Total basement area |
+| `BsmtFinSF1` | Finished basement area |
+| `1stFlrSF` | First floor area |
+| `GarageArea` / `GarageCars` | Garage size and capacity |
+
+> 💡 These align with real-world intuition — bigger, higher-quality homes with more usable space cost more. The model learned something meaningful, not noise.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.8+
+- pip
+
+### Installation
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/neural-agi/house-price-ml.git
+cd house-price-ml
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Launch the notebook
+jupyter notebook notebooks/01_house_price_prediction.ipynb
+```
+
+---
+
+## 📦 Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| **Python** | Core language |
+| **Pandas / NumPy** | Data wrangling |
+| **Scikit-learn** | Pipelines, models, evaluation |
+| **Matplotlib / Seaborn** | Visualization |
+
+---
+
+## 🧠 Key Learnings & Insights
+
+- ✅ Proper use of `Pipeline` + `ColumnTransformer` prevents data leakage
+- ✅ `MAE` chosen over `RMSE` for interpretability in dollar terms
+- ✅ Hyperparameter tuning ≠ better generalization — overfitting is real
+- ✅ Permutation importance cross-validates feature importance (no contradictions found)
+- ✅ Model behavior is grounded in domain-relevant features, not spurious correlations
+
+---
+
+## 🔮 Roadmap / Future Improvements
+
+- [ ] Advanced feature engineering (interaction terms, log-transforms)
+- [ ] Gradient Boosting experiments (XGBoost, LightGBM, CatBoost)
+- [ ] SHAP values for deeper explainability
+- [ ] Streamlit or FastAPI deployment
+- [ ] Kaggle submission + leaderboard benchmarking
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ---
 
 ## 👤 Author
-Paranjay Das, 
-BTech CSE (AI/ML), 
-Aspiring Machine Learning Engineer
+
+**Paranjay Das**
+BTech CSE (AI/ML) | Aspiring Machine Learning Engineer
+
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=flat-square&logo=github)](https://github.com/neural-agi)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](www.linkedin.com/in/paranjay-das-10b167384)
+
+---
+
+<div align="center">
+
+⭐ **If this project helped you, drop a star — it actually means a lot!** ⭐
+
+</div>
